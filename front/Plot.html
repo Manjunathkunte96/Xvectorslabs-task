@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SVT</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+
+ 
+  
+ 
+
+  <!-- Google Fonts -->
+  <<link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Acme&family=Lobster+Two&family=Merienda:wght@700&display=swap" rel="stylesheet">
+
+
+  <!-- Bootstrap CSS File -->
+  <link href="lib3/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+ 
+  
+
+  <!-- Main Stylesheet File -->
+  <link href="css/style3.css" rel="stylesheet">
+
+  
+</head>
+
+<body>
+
+  <!--==========================
+  Header
+  ============================-->
+  <header id="header" class="fixed-top">
+    <div class="container">
+
+      <div class="logo float-left">
+       
+        <a href="" class="scrollto"><img src="" alt="" class=""></a>
+      </div>
+
+      <nav class="main-nav float-right d-none d-lg-block">
+        <ul>
+          <li ><a href="C:\Users\Manjunath\Desktop\task2\task\front\index.html">Home</a></li>
+          <li ><a href="C:\Users\Manjunath\Desktop\task2\task\front\Data.html">Data</a></li>
+          <li class="active" ><a href="C:\Users\Manjunath\Desktop\task2\task\front\Data.html/Plot.html">Plot</a></li>
+         
+
+      
+    </div>
+  </header>
+
+  
+    <section id="about">
+      <div class="container">
+        
+
+        <header class="section-header">
+          
+         <form>
+          <select name="" id="datafile">
+            <option value=" ">Choose File</option>
+            <!-- <option value="Data file 02">Data file 02</option>
+            <option value="Data file 03">Data file 03</option>
+            <option value="Data file 04">Data file 04</option>
+            <option value="Data file 05">Data file 05</option> -->
+          </select>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input type="search" id = "colname" placeholder="Column1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <select name="" id="cal">
+            <option value="MAX">MAX</option>
+            <option value="MIN">MIN</option>
+          </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <button type="button" id = "compute" style="background-color: #15c9cc;">Compute</button>
+          <input type = "text" placeholder="result" value = "" id ="res" readonly>
+         </form>
+         <br>
+         <br>
+         <br>
+         <form>
+          <select name="" id="datafile1">
+            <option value="">Choose File</option>
+            <!-- <option value="Data file 02">Data file 02</option>
+            <option value="Data file 03">Data file 03</option>
+            <option value="Data file 04">Data file 04</option>
+            <option value="Data file 05">Data file 05</option> -->
+          </select>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input type="search" id="col1" placeholder="Column1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <input type="search"  id="col2" placeholder="Column2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <button type="button" id = "plot1" style="background-color: #15c9cc;">Plot</button>
+         </form>
+         <div>
+          <!-- <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+          <script>
+            var xArray = [50,60,70,80,90,100,110,120,130,140,150];
+            var yArray = [7,8,8,9,9,9,10,11,14,14,15];
+    
+            // Define Data
+            var data = [{
+              x:xArray,
+              y:yArray,
+              mode:"markers"
+            }];
+    
+            // Define Layout
+            var layout = {
+              xaxis: {range: [40, 160], title: "Square Meters"},
+              yaxis: {range: [5, 16], title: "Price in Millions"},  
+              title: "House Prices vs. Size"
+            };
+    
+            // Display using Plotly
+            Plotly.newPlot("myPlot", data, layout);
+          </script> -->
+         </div>
+       
+        </header>
+
+        <script
+        type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"
+      ></script>       
+          
+
+
+
+
+<script>
+
+  $(document).ready(function(){
+    var data = localStorage.getItem("data");
+    var parsed_data = JSON.parse(data);
+    console.log(parsed_data)
+        
+    if(parsed_data != "" || parsed_data != Undefined){
+      // $("#datafile").append($("<option>", { value: parsed_data, text: parsed_data }));
+      
+      //   $("#datafile1").append($("<option>", { value: parsed_data, text: parsed_data }));
+        for(var i=0;i<parsed_data.length;i++){
+            // $('#name'+i).val(parsed_data[i]);
+            // var j = i+1;
+            $("#datafile").append($("<option>", { value: parsed_data[i], text: parsed_data[i] }));
+            $("#datafile1").append($("<option>", { value: parsed_data[i], text: parsed_data[i] }));
+          }
+
+    }
+
+    $("#compute").click(function(){
+      // alert(this.value);
+
+      
+      event.preventDefault()
+      var filename = $("#datafile").val();
+      var columnname = $("#colname").val();
+      var value = $("#cal").val();
+
+        $.ajax({
+          url: "http://127.0.0.1:8000/getdata?filename="+filename+"&columnname="+columnname+"&value="+value,
+          type: "GET",
+          processData: false,
+          contentType: false,
+          // data: formData,
+
+          success: function (message) {
+            console.log(message, "messsagaggege");
+            if (message.success == "ok") {
+              console.log(message.data.max[0])
+              $('#res').val(message.data.max[0])
+              
+            } else {
+              console.log(message);
+            }
+          },
+        });
+      });
+    });
+  // });
+</script>
+
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+
+<div id="myPlot"></div>
+
+<script>
+
+$("#plot1").click(function(){
+    event.preventDefault()
+      var filename = $("#datafile1").val();
+      console.log(filename)
+      var columnname1 = $("#col1").val();
+      var columnname2 = $("#col2").val();
+      // var value = $("#cal").val();
+
+        $.ajax({
+          url: "http://127.0.0.1:8000/getdata?filename="+filename+"&columnname="+columnname1+"&columnname2="+columnname2,
+          type: "GET",
+          processData: false,
+          contentType: false,
+          // data: formData,
+
+          success: function (message) {
+            console.log(message, "messsagaggege");
+            if (message.success == "ok") {
+
+              var xArray = message.data.x;
+              var yArray = message.data.y;
+              var xmin = xArray[0]
+              var xmax = xArray[xArray.length-1]
+              var ymin = yArray[0]
+              var ymax = yArray[yArray.length-1]
+
+              // var xArray = [560,580,600,620,640,660,680,700,720,740,760,780,800];
+              // var yArray = [22,24,26,28,30,32];
+              console.log(yArray,"jjjjjj")
+              console.log(xArray,"arrattt")
+              var data = [{
+                x:xArray,
+                y:yArray,
+                mode:"markers"
+              }];
+
+              // Define Layout
+              var layout = {
+                xaxis: {range: [xmin, xmax], title: "Column 1"},
+                yaxis: {range: [ymin, ymax], title: "Column 2"},  
+                title: "Columns"
+              };
+
+              // Display using Plotly
+              Plotly.newPlot("myPlot", data, layout);
+              
+            } else {
+              console.log(message);
+            }
+          },
+        });
+      });
+
+// var xArray = [560,580,600,620,640,660,680,700,720,740,760,780,800];
+// var yArray = [22,24,26,28,30,32];
+
+// // Define Data
+// var data = [{
+//   x:xArray,
+//   y:yArray,
+//   mode:"markers"
+// }];
+
+// // Define Layout
+// var layout = {
+//   xaxis: {range: [560, 800], title: "Column 1"},
+//   yaxis: {range: [22, 32], title: "Column 2"},  
+//   title: "Columns"
+// };
+
+// // Display using Plotly
+// Plotly.newPlot("myPlot", data, layout);
+</script>
+
+    
+
+</body>
+</html>

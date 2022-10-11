@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SVT</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+
+ 
+  
+ 
+
+  <!-- Google Fonts -->
+  <<link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Acme&family=Lobster+Two&family=Merienda:wght@700&display=swap" rel="stylesheet">
+
+
+  <!-- Bootstrap CSS File -->
+  <link href="lib2/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Main Stylesheet File -->
+  <link href="css/style2.css" rel="stylesheet">
+
+  
+</head>
+
+<body>
+
+  <!--==========================
+  Header
+  ============================-->
+  <header id="header" class="fixed-top">
+    <div class="container">
+
+      <div class="logo float-left">
+       
+        <a href="#" class="scrollto"><img src="" alt="" class=""></a>
+      </div>
+
+      <nav class="main-nav float-right d-none d-lg-block">
+        <ul>
+          <li ><a href="C:\Users\Manjunath\Desktop\task2\task\front\index.html">Home</a></li>
+          <li class="active" ><a href="C:\Users\Manjunath\Desktop\task2\task\front\Data.html">Data</a></li>
+          <li><a href="C:\Users\Manjunath\Desktop\task2\task\front\Plot.html">Plot</a></li>
+         
+
+      
+    </div>
+  </header><!-- #header -->
+
+  <!--==========================
+     Section
+  ============================-->
+  <section id="intro" class="clearfix">
+    <div class="container">
+
+      
+
+    </div>
+  </section><!-- # -->
+
+  <main id="main">
+
+    <!--==========================
+      About Us Section
+    ============================-->
+    <section id="about">
+      <div class="container">
+
+        <header class="section-header">
+         <input type="tex" id="name1" placeholder="Data file 01" value=""><br>
+         <input type="tex" id="name2" placeholder="Data file 02"><br>
+         <input type="tex" id="name3" placeholder="Data file 03"><br>
+         <input type="tex" id="name4" placeholder="Data file 04"><br>
+         <input type="tex" id="name5" placeholder="Data file 05">
+         <br>
+         <br>
+         <br>
+         <br>
+         <br>
+         <br>
+         <br>
+         <br>
+         <!-- <input type="file" id=""> -->
+         <br>
+         <br>
+         <!-- <input type="search" placeholder="<Data file name>">
+          <button type="submit" style="background-color: #15c9cc;">Upload</button> -->
+
+          <form enctype="multipart/form-data" id="addProductForm">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text" id="inputGroupFileAddon01"
+                  >Upload</span
+                >
+              </div>
+              <div class="custom-file">
+                <input
+                  type="file"
+                  class="custom-file-input"
+                  id="inputGroupFile01"
+                  aria-describedby="inputGroupFileAddon01"
+                /><br />
+                <label class="custom-file-label" for="inputGroupFile01" 
+                  >Choose file</label
+                ><br />
+              </div>
+            </div>
+            <br />
+           
+            
+            <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+          </form>
+
+       <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"
+    ></script>
+    <script>
+      $("#submit").click(function (event) {
+        event.preventDefault()
+        var data_file_names = [];
+        const file = $("#inputGroupFile01").prop("files")[0];
+        var formData = new FormData();
+       
+        formData.append("file", file);
+        console.log(formData);
+
+        // var object = {};
+        // formData.forEach((value, key) => (object[key] = value));
+        // var json = JSON.stringify(object);
+
+        $.ajax({
+          url: "http://127.0.0.1:8000/dataset",
+          type: "POST",
+          // dataType: "script",
+          processData: false,
+          contentType: false,
+          data: formData,
+
+          success: function (message) {
+            // alert("dfnvjek");
+            console.log(message, "bdsfjfjh");
+            if (message.success == "ok") {
+              // $('#name1').val(message.data)
+              // localStorage.setItem("data", JSON.stringify(message.data));
+              // console.log(localStorage.getItem("data"));
+
+              var data = localStorage.getItem("data");
+              if(!! data){
+                var parsed_data = JSON.parse(data);
+                if(!parsed_data.includes(message.data)){
+                  len = parsed_data.length;
+                  parsed_data[len] = message.data;
+                  // $('#name1').val(message.data)
+                  for(var i=0;i<parsed_data.length;i++){
+                    var j = i+1;
+                    $('#name'+j).val(parsed_data[i]);
+                  }
+                  localStorage.setItem("data", JSON.stringify(parsed_data));
+                }
+
+              }else{
+                len = data_file_names.length;
+                  data_file_names[len] = message.data;
+                  // $('#name1').val(message.data)
+                  for(var i=0;i<data_file_names.length;i++){
+                    var j = i+1;
+                    $('#name'+j).val(data_file_names[i]);
+                  }
+                  localStorage.setItem("data", JSON.stringify(data_file_names));
+              }
+        
+              
+              
+              
+              console.log(localStorage.getItem("data"));
+
+              // false;
+
+              // location.href =
+              //   "http://localhost/trackado/python_project/frontend/mapping.html";
+            } else {
+              console.log(message);
+            }
+          },
+          // error: function (message) {
+          //   // Success = false;
+          //   console.log(message);
+          // },
+        });
+      });
+
+      $(document).ready(function(){
+        // localStorage.removeItem("data")
+        var data = localStorage.getItem("data");
+        var parsed_data = JSON.parse(data);
+        console.log(parsed_data,"iiiiiiiiiiii")
+        if(!! parsed_data){
+          // $('#name1').val(parsed_data)
+          for(var i=0;i<parsed_data.length;i++){
+            var j = i+1;
+            console.log(parsed_data[i], '#name'+i)
+            $('#name'+j).val(parsed_data[i]);
+          }
+
+        }
+      });
+
+      
+      </script>
+       
+        </header>
+
+       
+
+</body>
+</html>
